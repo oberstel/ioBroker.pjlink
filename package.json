@@ -1,48 +1,45 @@
 {
   "name": "iobroker.pjlink",
-  "version": "0.1.0",
-  "description": "Adapter for ioBroker that controls any PJLink compatible projector.",
+  "version": "0.0.2",
+  "description": "ioBroker PJLink Adapter, based on PJLink Specification V1.04",
   "author": {
-    "name": "oberstel",
-    "email": "oberstel@gmail.com"
+    "name": "@@Author@@",
+    "email": "@@email@@"
   },
   "contributors": [
     {
-      "name": "oberstel",
-      "email": "oberstel@gmail.com"
+      "name": "@@Author@@",
+      "email": "@@email@@"
     }
   ],
-  "homepage": "https://github.com/oberstel/ioBroker.pjlink",
-  "readme": "https://github.com/oberstel/ioBroker.pjlink/blob/master/README.md",
+  "homepage": "https://github.com/oberstelioBroker/ioBroker.template",
   "license": "MIT",
   "keywords": [
     "ioBroker",
-    "pjlink",
-    "projector",
-    "beamner",
-    "video",
-    "jbmia"
+    "template",
+    "Smart Home",
+    "home automation"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/oberstel/ioBroker.pjlink.git"
+    "url": "https://github.com/ioBroker/ioBroker.template"
   },
-  "dependencies": {
-    "logitechmediaserver": "~0.0.3"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "grunt": "~0.4.4",
-    "grunt-replace": "~0.7.6",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-jscs": "~0.6.1",
-    "grunt-http": "~1.4.1",
-    "grunt-contrib-clean": "~0.5.0",
-    "grunt-contrib-compress": "~0.8.0",
-    "grunt-contrib-copy": "~0.5.0",
-    "grunt-exec": "~0.4.5"
+    "grunt": "^1.0.1",
+    "grunt-replace": "^1.0.1",
+    "grunt-contrib-jshint": "^1.1.0",
+    "grunt-jscs": "^3.0.1",
+    "grunt-http": "^2.2.0",
+    "mocha": "^3.5.3",
+    "chai": "^4.1.2"
+  },
+  "main": "main.js",
+  "scripts": {
+    "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/oberstel/ioBroker.pjlink/issues"
+    "url": "https://github.com/ioBroker/ioBroker.template/issues"
   },
-  "main": "pjlink.js"
+  "readmeFilename": "README.md"
 }

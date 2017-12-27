@@ -1,6 +1,7 @@
 # iobroker.pjlink
 This adapter controls any PJLink compatible projector or display with ioBroker.
-The PJLink protocol is used by NEC, Casio, Seiko, Sony, Panasonic, Hitachi, Misubishi, Ricoh, Vivitek and even more. Please consult the device manual to check compatibility.
+
+PJLink is a unified standard for operating and controlling data projectors and displays. The protocol enables central control of certain devices, manufactured by different vendors. The protocol is used by NEC, Casio, Seiko, Sony, Panasonic, Hitachi, Misubishi, Ricoh, Vivitek and even more. Please consult the device manual to check compatibility.
 
 Please be aware, that the communication with the projector is not possible if the projector is in standby with enabled power saving feature. Therefore, it will not be possible to turn the project on using this adapter. To do so, disable the power saving feature using the projector configuration.
 

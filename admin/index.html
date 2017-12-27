@@ -1,101 +1,149 @@
 <html>
-    <link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css" />
+<link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
+<script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../../socket.io/socket.io.js"></script>
+<script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
 
-    <script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="../../lib/js/jquery-ui-1.10.3.full.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../../css/adapter.css"/>
+<script type="text/javascript" src="../../js/translate.js"></script>
+<script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<script type="text/javascript" src="words.js"></script>
 
-    <link rel="stylesheet" type="text/css" href="../../css/adapter.css" />
-    <script type="text/javascript" src="../../js/translate.js"></script>
-    <script type="text/javascript" src="../../js/adapter-settings.js"></script>
+<!-- you have to define 2 functions in the global scope: -->
+<script type="text/javascript">
 
-    <script type="text/javascript">
-        var bridges = [];
-        systemDictionary = {
-            "PJLink adapter settings": {
-                "en": "PJLink adapter settings",
-                "de": "PJLink Adapter-Einstellungen"
-            },
-            "host": { "en": "Projector IP address", "de": "Projektor IP Addresse" },
-            "port": { "en": "TCP port", "de": "TCP port" },
-            "class": { "en": "PJLink compatibility", "de": "PJLink Kompatibilität" },
-          
-            "on save adapter restarts with new config immediately": {
-            "de": "Beim Speichern von Einstellungen der Adapter wird sofort neu gestartet.",
-            } 
-          };
-
-        var active   = false;
-
-        function setValue(id, value, onChange) {
-            // example: select elements with id=key and class=value and insert value
-            if ($('#' + id + '.value').attr('type') == 'checkbox') {
-                $('#' + id + '.value').prop('checked', value).change(function() {
+    // the function loadSettings has to exist ...
+    function load(settings, onChange) {
+        // example: select elements with id=key and class=value and insert value
+       if (!settings) return;
+        $('.value').each(function () {
+            var $key = $(this);
+            var id = $key.attr('id');
+            if ($key.attr('type') === 'checkbox') {
+		// do not call onChange direct, because onChange could expect some arguments
+                $key.prop('checked', settings[id]).change(function() {
                     onChange();
                 });
             } else {
-                $('#' + id + '.value').val(value).change(function() {
+		// do not call onChange direct, because onChange could expect some arguments
+                $key.val(settings[id]).change(function() {
                     onChange();
                 }).keyup(function() {
-                    $(this).trigger('change');
+                    onChange();
                 });
             }
-        }
+        });
+        onChange(false);
+    }
 
-        // the function loadSettings has to exist ...
-        function load(settings, onChange) {
-            for (var key in settings) {
-                setValue(key, settings[key], onChange);
-            }
-            // read if instance is active or enabled
-            socket.emit('getState', 'system.adapter.' + adapter + '.' + instance + '.alive', function (err, state) {
-                active = common.enabled || (state && state.val);
-            });
-            onChange(false);
-        }
+    // ... and the function save has to exist.
+    // you have to make sure the callback is called with the settings object as first param!
+    function save(callback) {
+        // example: select elements with class=value and build settings object
+        var obj = {};
+        $('.value').each(function () {
+            var $this = $(this);
+			if ($this.attr('type') === 'checkbox') {
+				obj[$this.attr('id')] = $this.prop('checked');
+			} else {
+				obj[$this.attr('id')] = $this.val();
+			}
+        });
+        callback(obj);
+    }
+</script>
 
-        // ... and the function save has to exist.
-        // you have to make sure the callback is called with the settings object as first param!
-        function save(callback) {
-            // example: select elements with class=value and build settings object
-            var obj = {};
-            $('.value').each(function () {
-                var $this = $(this);
-                if ($this.attr('type') == 'checkbox') {
-                    obj[$this.attr('id')] = $this.prop('checked');
-                } else {
-                    obj[$this.attr('id')] = $this.val();
-                }
-            });
-            $('.check').each(function () {
-                var $this = $(this);
-                obj[$this.attr('id')] = $this.is('checked');
-            });
-            callback(obj);
-        }
-    </script>
 
     <style>
-        #settings tr {
-            line-height: 2.5em;
+        h1 {
+            font-size: 11px;
+            color: #505050;
+            font-weight: bold;
+           width: 100%;
+            padding-left:6px;
+            padding-right: 5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #e0e0e0;
         }
+        h2 {
+            font-size: 14px;
+            #color: #505050;
+            color: #202060;
+            font-weight: bold;
+            width: 100%;
+            padding-left:6px;
+            padding-right: 5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            background-color: #e0e0e0;
+        }
+        .msgTable{
+            width:100%;
+            border-collapse:collapse;
+        }
+        .msgTable td{
+            padding:7px; border:#4e95f4 1px solid;
+        }
+        .msgTable tr{
+            background: #b8d1f3;
+        }
+        .hoverTable{
+            width:100%;
+            border-collapse:collapse;
+        }
+        .hoverTable td{
+            padding:7px; border:#4e95f4 1px solid; cursor: hand;
+        }
+        .hoverTable th{
+            padding:7px; border:#4e95f4 1px solid; background-color: #b8d1f3;
+        }
+        .hoverTable th:hover{
+            padding:7px; border:#4e95f4 1px solid; background-color: #b8d1f3;
+        }
+        .hoverTable tr{
+            background: #b8d1f3;
+        }
+        .hoverTable tr:hover {
+            background-color: #ffff99;
+        }
+        td {
+            font-size: 13px;
+            padding-left:1px;
+            padding-right: 4px;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+        input {
+            font-size: 13px;
+          }
     </style>
+<!-- you have to put your config page in a div with id adapter-container -->
+    <table><tr>
+        <td><img src="pjlink.png"/></td>
+        <td><h3 class="translate">PJLink adapter settings</h3></td>
+      </tr>
+    </table>
 
-    <!-- you have to put your config page in a div with id adapter-container -->
-    <div id="adapter-container">
-        <table><tr><td><img src="squeezebox.png" width="64" height="64"></td><td><h3 class="translate">Logitech Squeezebox adapter settings</h3></td></tr></table>
-        <div id="settings">
-            <table>
-                <tr>
-                    <td class="translate">Projector IP Address</td>
-                    <td><input type="text" id="server" class="value"></td>
-                </tr>
-                <tr>
-                    <td class="translate">Track time update interval (sec)</td>
-                    <td><input type="text" id="elapsedInterval" class="value"></td>
-                    <td></td>
-                </tr>
-            </table>
-        </div>
-    </div>
+		<h1 class="translate">Projector</h1>
+		<table style="width: 100%; white-space: nowrap;">
+		<tr>
+				<td style="height: 10px" class="translate">IP Address</td><td width=1></td><td><input type="text" id="host" class="value"></td><td width=100%></td>
+		</tr>
+		<tr>
+				<td style="height: 10px" class="translate">TCP Port</td><td width=1></td><td><input type="text" id="port" class="value"></td><td width=100%></td>
+		</tr>
+		<tr>
+				<td style="height: 10px" class="translate">Password</td><td width=1></td><td><input type="text" id="password" class="value"></td><td width=100%></td>
+		</tr>
+		</table>
+
+		<h1 class="translate">Adapter</h1>
+		<table style="width: 100%; white-space: nowrap;">
+		<tr>
+				<td style="height: 10px" class="translate">Poll Interval</td><td width=1></td><td><input type="text" id="polltime" class="value"></td><td width=100%></td>
+		</tr>
+		</table>
+
+    <p class="translate">Note: On save, adapter restarts with new config immediately!</p>
 </html>

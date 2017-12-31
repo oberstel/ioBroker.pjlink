@@ -1,4 +1,5 @@
 <html>
+
 <link rel="stylesheet" type="text/css" href="../../lib/css/themes/jquery-ui/redmond/jquery-ui.min.css"/>
 <script type="text/javascript" src="../../lib/js/jquery-1.11.1.min.js"></script>
 <script type="text/javascript" src="../../socket.io/socket.io.js"></script>
@@ -51,6 +52,7 @@
         });
         callback(obj);
     }
+
 </script>
 
 
@@ -59,7 +61,7 @@
             font-size: 11px;
             color: #505050;
             font-weight: bold;
-           width: 100%;
+            width: 100%;
             padding-left:6px;
             padding-right: 5px;
             padding-top: 5px;
@@ -78,6 +80,7 @@
             padding-bottom: 5px;
             background-color: #e0e0e0;
         }
+
         .msgTable{
             width:100%;
             border-collapse:collapse;
@@ -128,14 +131,24 @@
 		<h1 class="translate">Projector</h1>
 		<table style="width: 100%; white-space: nowrap;">
 		<tr>
-				<td style="height: 10px" class="translate">IP Address</td><td width=1></td><td><input type="text" id="host" class="value"></td><td width=100%></td>
+				<td style="height: 10px" class="translate">IP Address</td><td width=2></td><td><input type="text" id="host" class="value"></td><td width=100%></td>
 		</tr>
 		<tr>
-				<td style="height: 10px" class="translate">TCP Port</td><td width=1></td><td><input type="text" id="port" class="value"></td><td width=100%></td>
+				<td style="height: 10px" class="translate">TCP Port</td><td width=2></td><td><input type="text" id="port" class="value"></td><td width=100%></td>
 		</tr>
 		<tr>
-				<td style="height: 10px" class="translate">Password</td><td width=1></td><td><input type="text" id="password" class="value"></td><td width=100%></td>
+				<td style="height: 10px" class="translate">Password</td><td width=2></td><td><input type="text" id="password" class="value"></td><td width=100%></td>
 		</tr>
+    <tr>
+      <td style="height: 10px"><label for="protocol" class="translate">Protocol</label></td>
+             <td width=2></td>
+             <td>
+                 <select id="protocol" class="value">
+                     <option value="class1">PJLink Class#1</option>
+                 </select>
+             </td>
+    </tr>
+
 		</table>
 
 		<h1 class="translate">Adapter</h1>
@@ -146,4 +159,7 @@
 		</table>
 
     <p class="translate">Note: On save, adapter restarts with new config immediately!</p>
+
+
+
 </html>

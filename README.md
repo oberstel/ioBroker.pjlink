@@ -20,6 +20,7 @@ The adapter consists by three elements:
 -	Admin interface to define device specific parameters (admin/index.html)
 -	JavaScript module for device communication, based on PJLink protocol (utils/pjlink.js)
 -	Main script (main.js)
+
 The Main script works in four steps:
 1)	Doing some initial configuration like creating ioBroker objects
 2)	Starring the first communication with the device and asking for the current parameters 

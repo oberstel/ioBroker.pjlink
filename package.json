@@ -1,18 +1,18 @@
 {
   "name": "iobroker.pjlink",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "ioBroker PJLink Adapter, based on PJLink Specification V1.04",
   "author": {
-    "name": "@@Author@@",
-    "email": "@@email@@"
+    "name": "oberstel",
+    "email": "oberstel@gmail.com"
   },
   "contributors": [
     {
-      "name": "@@Author@@",
-      "email": "@@email@@"
+      "name": "Puschek",
+      "email": "dmondry94@gmx.de"
     }
   ],
-  "homepage": "https://github.com/oberstelioBroker/ioBroker.template",
+  "homepage": "https://github.com/oberstel/ioBroker.pjlink",
   "license": "MIT",
   "keywords": [
     "ioBroker",
@@ -22,7 +22,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ioBroker/ioBroker.template"
+    "url": "https://github.com/oberstel/ioBroker.pjlink"
   },
   "dependencies": {},
   "devDependencies": {
@@ -39,7 +39,7 @@
     "test": "node node_modules/mocha/bin/mocha"
   },
   "bugs": {
-    "url": "https://github.com/ioBroker/ioBroker.template/issues"
+    "url": "https://github.com/oberstel/ioBroker.pjlink/issues"
   },
   "readmeFilename": "README.md"
 }

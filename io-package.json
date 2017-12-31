@@ -1,11 +1,17 @@
 {
     "common": {
         "name": "pjlink",
-        "version": "0.0.2",
+        "version": "0.1.0",
         "title": "PJLink adapter",
         "news": {
-            "0.1.0": {
-                "en": "First public flight (beta)"
+          "0.1.0": {
+              "en": "first public flight (beta)"
+          },
+           "0.0.3": {
+              "en": "bugfixing"
+          },
+            "0.0.2": {
+                "en": "first run"
             },
             "0.0.1": {
                 "en": "Initial version"
@@ -26,7 +32,7 @@
             "PJLink",
             "Projector",
             "Display",
-            "Vivitek"
+            "Vivitek", "NEC", "Casio", "Sharp", "Sky", "Sony", "Panasonic", "Hitachi", "Mitsubishi", "Ricoh"
         ],
         "readme": "https://github.com/oberstel/ioBroker.pjlink/blob/master/README.md",
         "loglevel": "info",
@@ -41,10 +47,7 @@
         "port": 4352,
         "password": "",
         "polltime": 10000,
-        "inputVariants": {
-          "HDMI1": 31,
-          "HDMI2": 32
-        }
+        "protocol": "class1"
     },
 
     "objects": [],

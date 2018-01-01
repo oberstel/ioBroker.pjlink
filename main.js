@@ -82,7 +82,7 @@ adapter.on('stateChange', function (id, state) {
                  });
                }
       }
-      adapter.log.info('Changed ' + dataobject + ' to ' + state.val);
+      adapter.log.info('changed ' + dataobject + ' to ' + state.val);
   }
 });
 
@@ -91,6 +91,7 @@ adapter.on('stateChange', function (id, state) {
 adapter.on('ready', function () {
     main();
 });
+
 
 function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
@@ -105,6 +106,14 @@ function main() {
     password = adapter.config.password;
     polltime = adapter.config.polltime;
     pjlink = require(__dirname + '/lib/pjlink');
+
+ // Check communication
+  pjlink(host,port,password,"%1POWR ?", function (result) {
+   if (result.substring(0,5) == 'Error') {
+      adapter.log.error (result);
+      process.exit();
+     }
+  });
 
   // defining dataobjects
   adapter.setObjectNotExists('power', {
@@ -183,7 +192,8 @@ function main() {
        native: {}
      });
 
-// Polling some initial information...
+// Query some data...
+
   // Device Name
   pjlink(host,port,password, "%1NAME ?", function(result){
     adapter.setState('info.name', {val: result, ack: true});
@@ -224,6 +234,7 @@ function main() {
                 pjlink(host,port,password, "%1INPT ?", function(result){
                   if (result == 'ERR2') {
                     inputSource = 0;
+                    adapter.log.warn('warning: no signal for input source');
                     adapter.setState('inputSource', {val: 'none', ack: true});
                     }
                   else {

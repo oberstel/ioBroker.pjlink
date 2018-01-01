@@ -1,9 +1,12 @@
 {
     "common": {
         "name": "pjlink",
-        "version": "0.1.0",
+        "version": "0.1.1",
         "title": "PJLink adapter",
         "news": {
+          "0.1.1": {
+              "en": "implementing error handling"
+          },
           "0.1.0": {
               "en": "first public flight (beta)"
           },
@@ -22,6 +25,7 @@
             "de": "Adaper zur Steuerung von PJLink kompatiblen Projektoren und Displays"
         },
         "platform": "Javascript/Node.js",
+        "license": "MIT",
         "mode": "daemon",
         "icon": "pjlink.png",
         "enabled": true,
@@ -34,7 +38,7 @@
             "Display",
             "Vivitek", "NEC", "Casio", "Sharp", "Sky", "Sony", "Panasonic", "Hitachi", "Mitsubishi", "Ricoh"
         ],
-        "readme": "https://github.com/oberstel/ioBroker.pjlink/blob/master/README.md",
+        "readme": "https://github.com/oberstel/ioBroker.pjlink/README.md",
         "loglevel": "info",
         "type": "multimedia",
         "authors": [

@@ -28,9 +28,9 @@ Please be aware, that the communication with the projector is not possible if th
 
 ## Changelog
 ### 0.1.1 (2017/12/31)
-- multilanguage (DE, EN, RU) finalized 
-- error handling implemented
-- using different log levels (debug, info, warn, error)
+- multilanguage translations finalized (DE, EN, RU)
+- implemented error handling (now using different log levels like debug, info, warn...)
+- fixed an issue when inputSource is changed manually
 
 ### 0.1.0 (2017/12/31)
 - first public flight (beta)

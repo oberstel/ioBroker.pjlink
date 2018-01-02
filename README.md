@@ -27,7 +27,7 @@ The Main script works in four steps:
 Please be aware, that the communication with the projector is not possible if the projector is in standby with power saving feature enabled. Therefore, it will not be possible to turn the project on using this adapter. To do so, disable the power saving feature using the projector configuration (Menu > Settings...).
 
 ## Changelog
-### 0.1.1 (2017/12/31)
+### 0.1.1 (2018/01/02)
 - multilanguage translations finalized (DE, EN, RU)
 - implemented error handling (now using different log levels like debug, info, warn...)
 - fixed an issue when inputSource is changed manually

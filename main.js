@@ -2,7 +2,7 @@
 
 "use strict";
 
-var utils = require(__dirname + '/lib/utils'); // Get common adapter utils
+var utils = require('@iobroker/adapter-core'); // Get common adapter utils
 var adapter = utils.Adapter('pjlink');
 var host, port, password, polltime, pjlink;
 var power, inputSource, av_mute;

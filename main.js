@@ -120,7 +120,8 @@ function main() {
   pjlink(host,port,password,"%1POWR ?", function (result) {
    if (result.substring(0,5) == 'Error') {
       adapter.log.error (result);
-      process.exit();
+      adapter.terminate ? adapter.terminate() : process.exit()
+
      }
   });
 

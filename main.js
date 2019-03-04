@@ -116,7 +116,7 @@ function main() {
   pjlink(host,port,password,"%1POWR ?", function (result) {
    if (result.substring(0,5) == 'Error') {
       adapter.log.error (result);
-      process.exit();
+      adapter.terminate ? adapter.terminate() : process.exit();
      }
   });
 
@@ -402,4 +402,12 @@ var pollinfo = setInterval(function () {
   adapter.checkGroup('admin', 'admin', function (res) {
       console.log('check group user admin group admin: ' + res);
   });
+}
+
+// If started as allInOne/compact mode => return function to create instance
+if (module && module.parent) {
+    module.exports = startAdapter;
+} else {
+    // or start the instance directly
+    startAdapter();
 }

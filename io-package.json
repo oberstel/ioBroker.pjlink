@@ -43,7 +43,8 @@
         "type": "multimedia",
         "authors": [
             "oberstel <oberstel@gmail.com>"
-        ]
+                ],
+        "compact": true
     },
 
     "native": {

@@ -13,8 +13,7 @@ let adapter;
             });
           adapter = new utils.Adapter(options);
           return adapter;
-     });
-
+          };
 
 // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {

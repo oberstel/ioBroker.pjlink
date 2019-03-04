@@ -3,6 +3,7 @@
         "name": "pjlink",
         "version": "0.1.1",
         "title": "PJLink",
+        "compact": true,
         "news": {
           "0.1.1": {
               "en": "implementing error handling"
@@ -43,8 +44,7 @@
         "type": "multimedia",
         "authors": [
             "oberstel <oberstel@gmail.com>"
-                ],
-        "compact": true
+                ]
     },
 
     "native": {

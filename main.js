@@ -12,10 +12,7 @@ let adapter;
                name: 'pjlink'
             });
           adapter = new utils.Adapter(options);
-          return adapter;
-          };
-
-// is called when adapter shuts down - callback has to be called under any circumstances!
+          // is called when adapter shuts down - callback has to be called under any circumstances!
 adapter.on('unload', function (callback) {
     try {
         adapter.log.info('cleaned everything up...');
@@ -99,6 +96,10 @@ adapter.on('stateChange', function (id, state) {
 adapter.on('ready', function () {
     main();
 });
+          return adapter;
+          };
+
+
 
 
 function main() {

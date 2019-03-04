@@ -11,7 +11,7 @@ let adapter;
 function startAdapter(options) {
     options = options || {};
     Object.assign(options, {
-         name: 'pjlink'
+         name: 'pjlink',
          stateChange: function (id, state) {
             // Warning, state can be null if it was deleted
             adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));

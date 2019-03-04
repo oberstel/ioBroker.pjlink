@@ -203,7 +203,7 @@ function startAdapter(options) {
 
     }, polltime);
 
-
+/*
     // all states changes inside the adapters namespace are subscribed
         adapter.subscribeStates('*');
 
@@ -217,9 +217,9 @@ function startAdapter(options) {
         console.log('check group user admin group admin: ' + res);
     });
 
-
+*/
     return adapter;
-    };
+    }
 
 
 function main() {

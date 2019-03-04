@@ -382,13 +382,7 @@ var pollinfo = setInterval(function () {
     } // End of if power
 
      else {
-        if (inputSource != 0) {    // if device is off// If started as allInOne/compact mode => return function to create instance
-if (module && module.parent) {
-    module.exports = startAdapter;
-} else {
-    // or start the instance directly
-    startAdapter();
-}, set input source to 'none'
+        if (inputSource != 0) {    // if device is off, set input source to 'none'
            adapter.setState('inputSource', {val: 'none', ack: false});
            inputSource = 0;
           }

@@ -96,6 +96,126 @@ adapter.on('stateChange', function (id, state) {
 adapter.on('ready', function () {
     main();
 });
+          
+          // Polling dynamic infomration
+var pollinfo = setInterval(function () {
+  // Power State
+  // 0 = off (standby), 1 = on, 2 = cooling, 3 = warm-up
+  pjlink(host,port,password, "%1POWR ?", function(result){
+     adapter.log.debug('current device power state: ' + result);
+     adapter.getState ('power', function (err, adapter_state) {
+        if (result != adapter_state.val) {
+          adapter.setState('power', {val: result, ack: false});
+          power = result;
+          }
+    });
+
+
+ if (power == 1) {
+
+  // Error Status
+  // 0 = No error, 1 = Warning, 2 = Error
+  // 1: Fan, 2: Lamp, 3: Temperature, 4: Cover open, 5: Filter, 6: Other
+      pjlink(host,port,password, "%1ERST ?", function(result){
+        adapter.log.debug('current device errors: ' + result);
+        adapter.getState (adapter.namespace + '.info.error', function (err, adapter_state) {
+            if (adapter_state.val != result) {
+                adapter.setState('info.error', {val: result, ack: true});
+                }
+          });
+
+  // Lighting Hours
+  // 1: lighning time, 2: Lamp turned on (1) / off (2)
+  // 3: lighning time second lamp, 4: Lamp turned on (1) / off (2)
+          pjlink(host,port,password, "%1LAMP ?", function(result){
+            var lamp_hours = result.substr(0,result.indexOf(" "));
+            adapter.log.debug('current device lamp1 hours: ' + lamp_hours);
+            adapter.getState ('info.lamp1', function (err, adapter_state) {
+                if (lamp_hours != adapter_state.val) {
+                    adapter.setState('info.lamp1', {val: lamp_hours, ack: true});
+                    }
+            });
+
+  // Input Source
+  // 31 HDMI1, 32, HDMI2...
+            pjlink(host,port,password, "%1INPT ?", function(result){
+            adapter.log.debug('current device inputSource: ' + result);
+            adapter.getState ('inputSource', function (err, adapter_state) {
+              if (result == 'ERR2' && adapter_state.val != 'none') {
+                 inputSource = 0
+                 adapter.setState('inputSource', {val: 'none', ack: false});
+                }
+              if (result != 'ERR2' && adapter_state.val != result) {
+                 inputSource = result
+                 adapter.setState('inputSource', {val: result, ack: false});
+                }
+              });
+
+  // Audio / Video mute switch (only if power on)
+  // 10 = Video mute off, 11 = Video mute on                (** this gives an error with my device **),
+  // 20 = Audio mute off, 21 = Audio mute on,
+  // 30 = Audio and Video mute off, 31 = Audio and Video mute on
+                pjlink(host,port,password, "%1AVMT ?", function(result){
+                  adapter.log.debug ('current device av_mute state:' + result);
+                  if (result != av_mute) {
+                    av_mute = result;
+                    switch (result) {
+                      case '30':
+                       adapter.setState('av_mute', {val: false, ack: false});
+                       adapter.setState('audio_mute', {val: false, ack: false});
+                      break;
+
+                      case '31':
+                       adapter.setState('av_mute', {val: true, ack: false});
+                       adapter.setState('audio_mute', {val: true, ack: false});
+                      break;
+
+                      case '20':
+                       adapter.setState('av_mute', {val: false, ack: false});
+                       adapter.setState('audio_mute', {val: false, ack: false});
+                      break;
+
+                      case '21':
+                       adapter.setState('av_mute', {val: false, ack: false});
+                       adapter.setState('audio_mute', {val: true, ack: false});
+                      }
+                    }
+                  }); // End av_mute
+
+             }); // End inputSource
+
+          }); // End lamp1
+
+        }); // End error
+
+    } // End of if power
+
+     else {
+        if (inputSource != 0) {    // if device is off, set input source to 'none'
+           adapter.setState('inputSource', {val: 'none', ack: false});
+           inputSource = 0;
+          }
+        adapter.log.debug('idle');
+       }
+
+  }); // End first callback (power)
+
+ }, polltime);
+
+
+// all states changes inside the adapters namespace are subscribed
+    adapter.subscribeStates('*');
+
+
+// checkPassword/checkGroup functions
+    adapter.checkPassword('admin', 'iobroker', function (res) {
+        console.log('check user admin pw ioboker: ' + res);
+    });
+
+    adapter.checkGroup('admin', 'admin', function (res) {
+        console.log('check group user admin group admin: ' + res);
+    });
+}
           return adapter;
           };
 
@@ -287,127 +407,6 @@ function main() {
       });
     });
   });
-
-
-// Polling dynamic infomration
-var pollinfo = setInterval(function () {
-  // Power State
-  // 0 = off (standby), 1 = on, 2 = cooling, 3 = warm-up
-  pjlink(host,port,password, "%1POWR ?", function(result){
-     adapter.log.debug('current device power state: ' + result);
-     adapter.getState ('power', function (err, adapter_state) {
-        if (result != adapter_state.val) {
-          adapter.setState('power', {val: result, ack: false});
-          power = result;
-          }
-    });
-
-
- if (power == 1) {
-
-  // Error Status
-  // 0 = No error, 1 = Warning, 2 = Error
-  // 1: Fan, 2: Lamp, 3: Temperature, 4: Cover open, 5: Filter, 6: Other
-      pjlink(host,port,password, "%1ERST ?", function(result){
-        adapter.log.debug('current device errors: ' + result);
-        adapter.getState (adapter.namespace + '.info.error', function (err, adapter_state) {
-            if (adapter_state.val != result) {
-                adapter.setState('info.error', {val: result, ack: true});
-                }
-          });
-
-  // Lighting Hours
-  // 1: lighning time, 2: Lamp turned on (1) / off (2)
-  // 3: lighning time second lamp, 4: Lamp turned on (1) / off (2)
-          pjlink(host,port,password, "%1LAMP ?", function(result){
-            var lamp_hours = result.substr(0,result.indexOf(" "));
-            adapter.log.debug('current device lamp1 hours: ' + lamp_hours);
-            adapter.getState ('info.lamp1', function (err, adapter_state) {
-                if (lamp_hours != adapter_state.val) {
-                    adapter.setState('info.lamp1', {val: lamp_hours, ack: true});
-                    }
-            });
-
-  // Input Source
-  // 31 HDMI1, 32, HDMI2...
-            pjlink(host,port,password, "%1INPT ?", function(result){
-            adapter.log.debug('current device inputSource: ' + result);
-            adapter.getState ('inputSource', function (err, adapter_state) {
-              if (result == 'ERR2' && adapter_state.val != 'none') {
-                 inputSource = 0
-                 adapter.setState('inputSource', {val: 'none', ack: false});
-                }
-              if (result != 'ERR2' && adapter_state.val != result) {
-                 inputSource = result
-                 adapter.setState('inputSource', {val: result, ack: false});
-                }
-              });
-
-  // Audio / Video mute switch (only if power on)
-  // 10 = Video mute off, 11 = Video mute on                (** this gives an error with my device **),
-  // 20 = Audio mute off, 21 = Audio mute on,
-  // 30 = Audio and Video mute off, 31 = Audio and Video mute on
-                pjlink(host,port,password, "%1AVMT ?", function(result){
-                  adapter.log.debug ('current device av_mute state:' + result);
-                  if (result != av_mute) {
-                    av_mute = result;
-                    switch (result) {
-                      case '30':
-                       adapter.setState('av_mute', {val: false, ack: false});
-                       adapter.setState('audio_mute', {val: false, ack: false});
-                      break;
-
-                      case '31':
-                       adapter.setState('av_mute', {val: true, ack: false});
-                       adapter.setState('audio_mute', {val: true, ack: false});
-                      break;
-
-                      case '20':
-                       adapter.setState('av_mute', {val: false, ack: false});
-                       adapter.setState('audio_mute', {val: false, ack: false});
-                      break;
-
-                      case '21':
-                       adapter.setState('av_mute', {val: false, ack: false});
-                       adapter.setState('audio_mute', {val: true, ack: false});
-                      }
-                    }
-                  }); // End av_mute
-
-             }); // End inputSource
-
-          }); // End lamp1
-
-        }); // End error
-
-    } // End of if power
-
-     else {
-        if (inputSource != 0) {    // if device is off, set input source to 'none'
-           adapter.setState('inputSource', {val: 'none', ack: false});
-           inputSource = 0;
-          }
-        adapter.log.debug('idle');
-       }
-
-  }); // End first callback (power)
-
- }, polltime);
-
-
-// all states changes inside the adapters namespace are subscribed
-    adapter.subscribeStates('*');
-
-
-// checkPassword/checkGroup functions
-    adapter.checkPassword('admin', 'iobroker', function (res) {
-        console.log('check user admin pw ioboker: ' + res);
-    });
-
-    adapter.checkGroup('admin', 'admin', function (res) {
-        console.log('check group user admin group admin: ' + res);
-    });
-}
 
 // If started as allInOne/compact mode => return function to create instance
 if (module && module.parent) {

@@ -2,7 +2,7 @@
 # iobroker.pjlink
 ![Number of Installations](http://iobroker.live/badges/pjlink-installed.svg) ![Number of Installations](http://iobroker.live/badges/pjlink-stable.svg) This adapter controls any PJLink compatible projector or display with ioBroker.
 
-PJLink is a unified standard for operating and controlling data projectors and displays. The protocol enables central control of certain devices, manufactured by different vendors. The protocol is used by NEC, Casio, Seiko, Sony, Panasonic, Hitachi, Mitsubishi, Ricoh, Vivitek and even more. Please consult the device manual to check compatibility.
+PJLink is an unified standard for operating and controlling data projectors and displays. The protocol enables central control of certain devices, manufactured by different vendors. The protocol is used by NEC, Casio, Seiko, Sony, Panasonic, Hitachi, Mitsubishi, Ricoh, Vivitek and even more. Please consult the device manual to check compatibility.
 
 ## Current shortcomings
 - Error Handling is not implemented right now. If an unknown parameter is entered or if the device is not accessible using TCP/IP, an error will be shown in the ioBroker Log. In one of the future versions, the device errorcodes will be analyzed and translated.

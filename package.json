@@ -1,6 +1,6 @@
 {
   "name": "iobroker.pjlink",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "ioBroker PJLink Adapter, based on PJLink Specification V1.04",
   "author": {
     "name": "oberstel",

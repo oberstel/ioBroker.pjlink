@@ -5,6 +5,9 @@
         "title": "PJLink",
         "compact": true,
         "news": {
+          "0.1.2": {
+              "en": "fixed some bugs"
+          },
           "0.1.1": {
               "en": "implementing error handling"
           },

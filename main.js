@@ -1,11 +1,12 @@
 // PJLink adapter main script
+// V0.1.2
 
 "use strict";
 
 var utils = require('@iobroker/adapter-core'); // Get common adapter utils
 //var adapter = utils.Adapter('pjlink');
 var host, port, password, polltime, pjlink;
-var power, inputSource, av_mute;
+var power, inputSource, av_mute, state;
 
 let adapter;
 function startAdapter(options) {
@@ -13,6 +14,112 @@ function startAdapter(options) {
     Object.assign(options, {
          name: 'pjlink',
          stateChange: function (id, state) {
+            // Warning, state can be null if it was deleted
+            adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
+
+              if (state && !state.ack) {
+                var ids = id.split(".");
+                var dataobject = ids[ids.length - 1].toString();
+                switch (dataobject) {
+                 case 'power':
+                    pjlink(host,port,password, "%1POWR "+state.val, function(message){
+                      adapter.log.debug('device response:' + message);
+                      adapter.setState('power', {val: state.val, ack:true});
+                      power = state.val;
+                     });
+                    break;
+
+                  case 'state':
+                     pjlink(host,port,password, "%1POWR "+state.val, function(message){
+                       adapter.log.debug('device response:' + message);
+                        switch (message) {
+                          case '0': adapter.setState('state', {val: 'off', ack:true});
+                           break;
+
+                          case '1': adapter.setState('state', {val: 'on', ack:true});
+                            break;
+
+                          case '2': adapter.setState('state', {val: 'warm up', ack:true});
+                            break;
+
+                          case '3': adapter.setState('state', {val: 'cool down', ack:true});
+                            break;
+                          }
+                        });
+                   break;
+
+
+                 case 'inputSource':
+                     if (inputSource != 0) {
+                     pjlink(host,port,password, "%1INPT "+state.val, function(message){
+                       adapter.log.debug('device response:' + message);
+                       adapter.setState('inputSource', {val: state.val, ack:true});
+                       inputSource = state.val;
+                       });
+                      }
+                      break;
+
+                case 'audio_mute':
+                    if (state.val == false) {
+                         pjlink(host,port,password, "%1AVMT 20", function(message){
+                          adapter.log.debug('device response:' + message);
+                          adapter.setState('audio_mute', {val: false, ack:true});
+                        });
+                        }
+
+                    if (state.val == true) {
+                       pjlink(host,port,password, "%1AVMT 21", function(message){
+                        adapter.log.debug('device response:' + message);
+                        adapter.setState('audio_mute', {val: true, ack:true});
+                      });
+                     }
+                   break;
+
+                   case 'av_mute':
+                       adapter.log.debug('changed ' + dataobject + ' to ' + state.val);
+                       if (state.val == false) {
+                            pjlink(host,port,password, "%1AVMT 30", function(message){
+                              adapter.log.debug('device response:' + message);
+                              adapter.setState('av_mute', {val: false, ack:true});
+                            });
+                          }
+
+                        if (state.val == true) {
+                          pjlink(host,port,password, "%1AVMT 31", function(message){
+                            adapter.log.debug('device response:' + message);
+                            adapter.setState('av_mute', {val: true, ack:true});
+                           });
+                         }
+                }
+                adapter.log.info('changed ' + dataobject + ' to ' + state.val);
+            }
+         },
+
+   unload: function(callback){
+            try {
+                adapter.log.info('cleaned everything up...');
+		adapter.setState("system.adapter.pjlink.0.alive", false);
+                callback();
+            } catch (e) {
+		apter.log.error(e);
+                callback();
+            }
+         },
+
+   objectChange: function(callback){
+            // Warning, obj can be null if it was deleted
+            adapter.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj));
+         },
+         ready: function(){
+          main();
+         },
+
+    });
+    adapter = new utils.Adapter(options);
+
+/*
+
+    adapter.on("stateChange", function (id, state) {
             // Warning, state can be null if it was deleted
             adapter.log.debug('stateChange ' + id + ' ' + JSON.stringify(state));
 
@@ -72,27 +179,16 @@ function startAdapter(options) {
                 }
                 adapter.log.info('changed ' + dataobject + ' to ' + state.val);
             }
-         },
-         unload: function(callback){
-            try {
-                adapter.log.info('cleaned everything up...');
-                callback();
-            } catch (e) {
-                callback();
-            }
-         },
-         objectChange: function(callback){
-            // Warning, obj can be null if it was deleted
-            adapter.log.debug('objectChange ' + id + ' ' + JSON.stringify(obj)); 
-         },
-         ready: function(){
+         });
+
+    adapter.on("ready", function(){
           main();
-         },
+         });
 
-
+    adapter.on("unload", function(callback){
+        callback && callback();
     });
-    adapter = new utils.Adapter(options);
-
+*/
     return adapter;
 };
 
@@ -101,7 +197,7 @@ function startAdapter(options) {
 function main() {
     // The adapters config (in the instance object everything under the attribute "native") is accessible via
     // adapter.config:
-
+    setTimeout(function(){
     adapter.log.info('PJlink Class#1');
     adapter.log.info('config host: ' + adapter.config.host);
     adapter.log.info('config port: ' + adapter.config.port);
@@ -110,8 +206,9 @@ function main() {
     port = adapter.config.port;
     password = adapter.config.password;
     polltime = adapter.config.polltime;
-    pjlink = require(__dirname + '/lib/pjlink');
 
+    pjlink = require(__dirname + '/lib/pjlink');
+    //adapter.setState("system.adapter.pjlink.0.alive", false);
  // Check communication
   pjlink(host,port,password,"%1POWR ?", function (result) {
    if (result.substring(0,5) == 'Error') {
@@ -123,7 +220,14 @@ function main() {
   // defining dataobjects
   adapter.setObjectNotExists('power', {
       type: 'state',
-      common: {name: 'Power state', type: 'number', role: 'value', read: true, write: true},
+      common: {name: 'Power toggle', type: 'number', role: 'value', read: true, write: true},
+      native: {}
+    });
+  adapter.setState('power', {val: 0, ack: true });
+
+  adapter.setObjectNotExists('state', {
+      type: 'state',
+      common: {name: 'Power state', type: 'string', role: 'value', read: true, write: false},
       native: {}
     });
 
@@ -132,6 +236,8 @@ function main() {
       common: {name: 'Input Source', type: 'string', role: 'value', read: true, write: true},
       native: {}
     });
+
+
 
   adapter.setObjectNotExists('audio_mute', {
       type: 'state',
@@ -289,13 +395,24 @@ var pollinfo = setInterval(function () {
   // Power State
   // 0 = off (standby), 1 = on, 2 = cooling, 3 = warm-up
   pjlink(host,port,password, "%1POWR ?", function(result){
-     adapter.log.debug('current device power state: ' + result);
+     adapter.log.debug('current device power toggle: ' + result);
      adapter.getState ('power', function (err, adapter_state) {
-        if (result != adapter_state.val) {
+        if (result !== adapter_state.val) {
           adapter.setState('power', {val: result, ack: false});
           power = result;
           }
     });
+
+    // Power State
+    // 0 = off (standby), 1 = on, 2 = cooling, 3 = warm-up
+    pjlink(host,port,password, "%1POWR ?", function(result){
+       adapter.log.debug('current device power state: ' + result);
+       adapter.getState ('state', function (err, adapter_state) {
+          if (result !== adapter_state.val) {
+            adapter.setState('state', {val: result, ack: false});
+            power = result;
+            }
+      });
 
 
  if (power == 1) {
@@ -312,7 +429,7 @@ var pollinfo = setInterval(function () {
           });
 
   // Lighting Hours
-  // 1: lighning time, 2: Lamp turned on (1) / off (2)
+  // 1: lightning time, 2: Lamp turned on (1) / off (2)
   // 3: lighning time second lamp, 4: Lamp turned on (1) / off (2)
           pjlink(host,port,password, "%1LAMP ?", function(result){
             var lamp_hours = result.substr(0,result.indexOf(" "));
@@ -402,6 +519,8 @@ var pollinfo = setInterval(function () {
   adapter.checkGroup('admin', 'admin', function (res) {
       console.log('check group user admin group admin: ' + res);
   });
+
+    }, 5000);
 }
 
 // If started as allInOne/compact mode => return function to create instance

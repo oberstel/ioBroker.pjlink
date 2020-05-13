@@ -115,7 +115,7 @@ function main() {
 
  // Check communication
   pjlink(host,port,password,"%1POWR ?", function (result) {
-   if (result.substring(0,5) == 'Error') {
+   if (result.substring(0,5).toUpperCase() === 'ERROR') {
       adapter.log.error (result);
       adapter.terminate ? adapter.terminate() : process.exit();
      }
@@ -238,7 +238,7 @@ function main() {
 
   // Device Input Source
                 pjlink(host,port,password, "%1INPT ?", function(result){
-                  if (result == 'ERR2') {
+                  if (result.toUpperCase() === 'ERR2') {
                     inputSource = 0;
                     adapter.log.warn('warning: no signal for input source');
                     adapter.setState('inputSource', {val: 'none', ack: true});
@@ -329,11 +329,11 @@ var pollinfo = setInterval(function () {
             pjlink(host,port,password, "%1INPT ?", function(result){
             adapter.log.debug('current device inputSource: ' + result);
             adapter.getState ('inputSource', function (err, adapter_state) {
-              if (result == 'ERR2' && adapter_state.val != 'none') {
+              if (result.toUpperCase() === 'ERR2' && adapter_state.val !== 'none') {
                  inputSource = 0
                  adapter.setState('inputSource', {val: 'none', ack: false});
                 }
-              if (result != 'ERR2' && adapter_state.val != result) {
+              if (result.toUpperCase() !== 'ERR2' && adapter_state.val !== result) {
                  inputSource = result
                  adapter.setState('inputSource', {val: result, ack: false});
                 }

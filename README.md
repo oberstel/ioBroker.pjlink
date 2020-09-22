@@ -26,7 +26,8 @@ The Main script works in four steps:
 2)	Starring the first communication with the device and asking for the current parameters 
 3)	Waiting for a state change like switching the input source or turning power off
 4)	Executing the change with the device
-Please be aware, that the communication with the projector is not possible if the projector is in standby with power saving feature enabled. Therefore, it will not be possible to turn the project on using this adapter. To do so, disable the power saving feature using the projector configuration (Menu > Settings...).
+
+Note: Please be aware, that the communication with the projector won't be possible if the projector is in standby with power saving feature enabled. Therefore, it will not be possible to turn the project on using this adapter. To do so, disable the power saving feature using the projector configuration (Menu > Settings...).
 
 ## Changelog
 ### 0.1.2 (2019/05/11)
